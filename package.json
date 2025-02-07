@@ -1,0 +1,33 @@
+{
+  "name": "fund-me",
+  "scripts": {
+    "deploy": "hardhat run ./scripts/deploy.ts",
+    "deploy-sepolia": "hardhat run ./scripts/deploy.ts --network sepolia",
+    "solhint": "solhint 'contracts/**/*.sol'"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.8",
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@nomicfoundation/hardhat-verify": "^2.0.12",
+    "@typechain/hardhat": "^9.1.0",
+    "@types/sinon-chai": "^4.0.0",
+    "chai": "^5.1.2",
+    "ethers": "^6.13.5",
+    "hardhat": "^2.22.18",
+    "hardhat-gas-reporter": "^2.2.2",
+    "prettier": "^3.4.2",
+    "solidity-coverage": "^0.8.14"
+  },
+  "dependencies": {
+    "@typechain/ethers-v6": "^0.5.1",
+    "@types/chai": "^5.0.1",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^22.13.0",
+    "dotenv": "^16.4.7",
+    "prettier-plugin-solidity": "^1.4.2",
+    "ts-node": "^10.9.2",
+    "typechain": "^8.3.2",
+    "typescript": "^5.7.3"
+  }
+}
