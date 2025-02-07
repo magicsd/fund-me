@@ -1,10 +1,12 @@
 import type { HardhatUserConfig } from 'hardhat/config'
 import '@nomicfoundation/hardhat-toolbox'
 import '@nomicfoundation/hardhat-verify'
-import '@typechain/hardhat'
 import '@nomicfoundation/hardhat-ethers'
 import '@nomicfoundation/hardhat-chai-matchers'
+import '@typechain/hardhat'
 import 'hardhat-gas-reporter'
+import 'hardhat-deploy'
+import 'hardhat-deploy-ethers'
 import 'solidity-coverage'
 import 'dotenv/config'
 
@@ -42,6 +44,11 @@ const config: HardhatUserConfig = {
     noColors: true,
     currency: 'USD',
   },
+  namedAccounts: {
+    deployer: {
+      default: 0,
+    }
+  }
 }
 
 export default config
