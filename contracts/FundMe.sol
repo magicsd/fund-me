@@ -1,10 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import "./PriceConverter.sol";
+import {PriceConverter} from "./PriceConverter.sol";
+import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 
 error NotOwner();
 error CallFailed();
+error InvalidAmount();
 
 contract FundMe {
     using PriceConverter for uint256;
@@ -14,14 +16,17 @@ contract FundMe {
     address[] public funders;
     mapping(address => uint256) public addressToAmountFunded;
 
-    address immutable i_owner;
+    address public immutable I_OWNER;
 
-    constructor() {
-        i_owner = msg.sender;
+    AggregatorV3Interface public priceFeed;
+
+    constructor(address _priceFeed) {
+        priceFeed = AggregatorV3Interface(_priceFeed);
+        I_OWNER = msg.sender;
     }
 
     function fund() public payable {
-        require(msg.value.getConversionRate() >= MINIMUM_USD, "Minimum amount is 50 USD");
+        if (msg.value.getConversionRate(priceFeed) < MINIMUM_USD) revert InvalidAmount();
 
         funders.push(msg.sender);
         addressToAmountFunded[msg.sender] = msg.value;
@@ -35,13 +40,13 @@ contract FundMe {
 
         funders = new address[](0);
 
-        (bool isCallSucess, ) = payable(msg.sender).call{value: address(this).balance}("");
+        (bool isCallSuccess, ) = payable(msg.sender).call{value: address(this).balance}("");
 
-        if (!isCallSucess) revert CallFailed();
+        if (!isCallSuccess) revert CallFailed();
     }
 
     modifier onlyOwner() {
-        if (msg.sender != i_owner) revert NotOwner();
+        if (msg.sender != I_OWNER) revert NotOwner();
         _;
     }
 
