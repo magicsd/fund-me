@@ -5,12 +5,16 @@ type NetworkConfig = {
   ethUsdPriceFeed: string
 }
 
-export type NetworkName = 'hardhat' | 'sepolia' | 'polygon'
+export type DevelopmentNetworkName = 'hardhat' | 'localhost'
+export type NetworkName = 'sepolia' | 'polygon' | DevelopmentNetworkName
 
 const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || ''
 
 export const networks: Record<NetworkName, { chainId: ChainId, rpcUrl?: string }> = {
   hardhat: {
+    chainId: 31337
+  },
+  localhost: {
     chainId: 31337
   },
   sepolia: {
@@ -21,6 +25,8 @@ export const networks: Record<NetworkName, { chainId: ChainId, rpcUrl?: string }
     chainId: 137
   }
 }
+
+export const developmentChainIds = [networks.hardhat.chainId, networks.localhost.chainId]
 
 export const networkConfig: Record<ChainId, NetworkConfig> = {
   [networks.sepolia.chainId]: {
@@ -33,3 +39,6 @@ export const networkConfig: Record<ChainId, NetworkConfig> = {
     ethUsdPriceFeed: '0xF0d50568e3A7e8259E16663972b11910F89BD8e7'
   }
 }
+
+export const DECIMALS = 8
+export const INITIAL_ANSWER = 200000000000

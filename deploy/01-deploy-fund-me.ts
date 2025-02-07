@@ -1,6 +1,6 @@
 import type { HardhatRuntimeEnvironment } from 'hardhat/types'
 import type { DeployFunction } from 'hardhat-deploy/types'
-import { networkConfig } from '../helper-hardhat-config'
+import { developmentChainIds, networkConfig } from '../helper-hardhat-config'
 
 const deployFunction: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   console.log('Deploying FundMe contract...')
@@ -8,7 +8,7 @@ const deployFunction: DeployFunction = async (hre: HardhatRuntimeEnvironment) =>
   //@ts-ignore
   const { deployments, getNamedAccounts, network } = hre
 
-  const { deploy, log } = deployments
+  const { deploy, get, log } = deployments
   const { deployer } = await getNamedAccounts()
 
   const chainId = network.config.chainId
@@ -17,7 +17,15 @@ const deployFunction: DeployFunction = async (hre: HardhatRuntimeEnvironment) =>
     throw new Error('ChainId not found')
   }
 
-  const ethUsdPriceFeed = networkConfig[chainId].ethUsdPriceFeed
+  let ethUsdPriceFeed: string
+
+  if (developmentChainIds.includes(chainId)) {
+    const ethUsdAggregator = await get('MockV3Aggregator')
+
+    ethUsdPriceFeed = ethUsdAggregator.address
+  } else {
+    ethUsdPriceFeed = networkConfig[chainId].ethUsdPriceFeed
+  }
 
   const fundMe = await deploy('FundMe', {
     from: deployer,
