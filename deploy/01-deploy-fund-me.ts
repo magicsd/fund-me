@@ -37,4 +37,6 @@ const deployFunction: DeployFunction = async (hre: HardhatRuntimeEnvironment) =>
   console.log('---chainId', chainId)
 }
 
+deployFunction.tags = ['all', 'fundMe']
+
 export default deployFunction

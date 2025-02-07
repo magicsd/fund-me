@@ -30,6 +30,6 @@ const deployFunction: DeployFunction = async (hre: HardhatRuntimeEnvironment) =>
   log('----------------------------------------------------')
 }
 
-deployFunction.tags = ['mocks']
+deployFunction.tags = ['all', 'mocks']
 
 export default deployFunction
