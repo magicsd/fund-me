@@ -4,6 +4,8 @@ pragma solidity ^0.8.24;
 import {PriceConverter} from "./PriceConverter.sol";
 import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/shared/interfaces/AggregatorV3Interface.sol";
 
+import "hardhat/console.sol";
+
 error FundMe__NotOwner();
 error FundMe__CallFailed();
 error FundMe__InvalidAmount();
@@ -39,6 +41,8 @@ contract FundMe {
     /// Fund the contract
     /// @dev adds the sender to the funders list and stores the amount funded
     function fund() public payable {
+        console.log("Conversion rate:", msg.value.getConversionRate(priceFeed));
+
         if (msg.value.getConversionRate(priceFeed) < MINIMUM_USD) revert FundMe__InvalidAmount();
 
         funders.push(msg.sender);

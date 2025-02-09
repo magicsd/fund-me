@@ -38,7 +38,6 @@ const deployFunction: DeployFunction = async (hre: HardhatRuntimeEnvironment) =>
     from: deployer,
     args: deployArgs,
     log: true,
-    waitConfirmations: 6
   })
 
   if (!isDevChain && process.env.ETHERSCAN_API_KEY) {
