@@ -25,13 +25,13 @@ describe('FundMe', async () => {
 
   describe('constructor', async () => {
     it('sets the aggregator addresses correctly', async () => {
-      const response = await fundMe.s_priceFeed()
+      const response = await fundMe.getPriceFeed()
 
       expect(response).to.equal(await mockV3Aggregator.getAddress())
     })
 
     it('sets the owner correctly', async () => {
-      const response = await fundMe.I_OWNER()
+      const response = await fundMe.getOwner()
 
       expect(response).to.equal(deployer)
     })
@@ -49,7 +49,7 @@ describe('FundMe', async () => {
 
       await txResponse.wait(1)
 
-      const funder = await fundMe.s_funders(0)
+      const funder = await fundMe.getFunder(0)
 
       expect(funder).to.equal(deployer)
     })
@@ -59,7 +59,7 @@ describe('FundMe', async () => {
 
       await txResponse.wait(1)
 
-      const amountFunded = await fundMe.s_addressToAmountFunded(deployer)
+      const amountFunded = await fundMe.getAmountFunded(deployer)
 
       expect(amountFunded).to.equal(getAmount(1))
     })
@@ -123,11 +123,11 @@ describe('FundMe', async () => {
       expect(contractBalanceAfter).to.equal(0)
       expect(deployerBalanceAfter + gasCost).to.equal(contractBalanceBefore + deployerBalanceBefore)
 
-      const getFunderTx = fundMe.s_funders(0)
-      await expect(getFunderTx).to.be.revertedWithoutReason()
+      const getFunderTx = fundMe.getFunder(0)
+      await expect(getFunderTx).to.be.revertedWithPanic()
 
       for (let account of accounts) {
-        const amountFunded = await fundMe.s_addressToAmountFunded(account.address)
+        const amountFunded = await fundMe.getAmountFunded(account.address)
 
         expect(amountFunded).to.equal(0)
       }

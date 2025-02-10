@@ -15,10 +15,10 @@ contract FundMe {
     using PriceConverter for uint256;
 
     uint256 public constant MINIMUM_USD = 50 * 1e18;
-    address[] public s_funders;
-    mapping(address => uint256) public s_addressToAmountFunded;
-    address public immutable I_OWNER;
-    AggregatorV3Interface public s_priceFeed;
+    address[] private s_funders;
+    mapping(address => uint256) private s_addressToAmountFunded;
+    address private immutable I_OWNER;
+    AggregatorV3Interface private s_priceFeed;
 
     modifier onlyOwner() {
         if (msg.sender != I_OWNER) revert FundMe__NotOwner();
@@ -77,5 +77,21 @@ contract FundMe {
         (bool isCallSuccess, ) = payable(I_OWNER).call{value: address(this).balance}("");
 
         if (!isCallSuccess) revert FundMe__CallFailed();
+    }
+
+    function getOwner() public view returns (address) {
+        return I_OWNER;
+    }
+
+    function getFunder(uint256 _index) public view returns (address) {
+        return s_funders[_index];
+    }
+
+    function getAmountFunded(address _funder) public view returns (uint256) {
+        return s_addressToAmountFunded[_funder];
+    }
+
+    function getPriceFeed() public view returns (AggregatorV3Interface) {
+        return s_priceFeed;
     }
 }
