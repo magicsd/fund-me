@@ -63,4 +63,19 @@ contract FundMe {
 
         if (!isCallSuccess) revert FundMe__CallFailed();
     }
+
+    function cheaperWithdraw() public payable onlyOwner {
+        address[] memory funders = s_funders;
+
+        for (uint funderIndex = 0; funderIndex < funders.length; funderIndex++) {
+            address funder = funders[funderIndex];
+            s_addressToAmountFunded[funder] = 0;
+        }
+
+        s_funders = new address[](0);
+
+        (bool isCallSuccess, ) = payable(I_OWNER).call{value: address(this).balance}("");
+
+        if (!isCallSuccess) revert FundMe__CallFailed();
+    }
 }
