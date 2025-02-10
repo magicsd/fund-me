@@ -1,12 +1,15 @@
 import hre from 'hardhat'
 import type { FundMe, MockV3Aggregator } from '../../typechain-types'
 import { expect } from 'chai'
+import { developmentChainIds } from '../../helper-hardhat-config'
 
 type Address = string
 
 const getAmount = (amount: number) => hre.ethers.parseEther(amount.toString())
 
-describe('FundMe', async () => {
+const isDevNetwork = hre.network.config.chainId && developmentChainIds.includes(hre.network.config.chainId)
+
+!isDevNetwork ? describe.skip : describe('FundMe', async () => {
   let fundMe: FundMe
   let deployer: Address
   let mockV3Aggregator: MockV3Aggregator
