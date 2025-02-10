@@ -1,7 +1,13 @@
 {
   "name": "fund-me",
   "scripts": {
-    "solhint": "solhint 'contracts/**/*.sol'"
+    "lint": "solhint 'contracts/**/*.sol'",
+    "lint:fix": "solhint 'contracts/**/*.sol' --fix",
+    "fund": "hardhat run scripts/fund.ts --network localhost",
+    "withdraw": "hardhat run scripts/withdraw.ts --network localhost",
+    "test": "hardhat test",
+    "test:staging": "hardhat test --network sepolia",
+    "coverage": "hardhat coverage"
   },
   "devDependencies": {
     "@chainlink/contracts": "^1.3.0",
