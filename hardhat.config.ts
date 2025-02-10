@@ -36,8 +36,8 @@ const config: HardhatUserConfig = {
     enabled: true,
   },
   gasReporter: {
-    enabled: false,
-    offline: false,
+    enabled: true,
+    offline: true,
     coinmarketcap: COINMARKETCAP_API_KEY,
     L1Etherscan: ETHERSCAN_API_KEY,
     outputFile: 'gas-report.txt',
