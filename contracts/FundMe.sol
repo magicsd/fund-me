@@ -41,7 +41,7 @@ contract FundMe {
     /// Fund the contract
     /// @dev adds the sender to the funders list and stores the amount funded
     function fund() public payable {
-        console.log("Conversion rate:", msg.value.getConversionRate(priceFeed));
+        //        console.log("Conversion rate:", msg.value.getConversionRate(priceFeed));
 
         if (msg.value.getConversionRate(priceFeed) < MINIMUM_USD) revert FundMe__InvalidAmount();
 

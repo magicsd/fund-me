@@ -41,7 +41,7 @@ describe('FundMe', async () => {
     it('should revert if amount is not enough', async () => {
       const tx = fundMe.fund()
 
-      await expect(tx).to.be.revertedWithCustomError(fundMe, "FundMe__InvalidAmount")
+      await expect(tx).to.be.revertedWithCustomError(fundMe, 'FundMe__InvalidAmount')
     })
 
     it('adds the sender to the funders list', async () => {
@@ -96,12 +96,49 @@ describe('FundMe', async () => {
       expect(deployerBalanceAfter + gasCost).to.equal(contractBalanceBefore + deployerBalanceBefore)
     })
 
-    // it('reverts if the sender is not the owner', async () => {
-    //   const [, user] = await hre.ethers.getSigners()
-    //
-    //   const tx = fundMe.withdraw()
-    //
-    //   await expect(tx).to.be.revertedWithCustomError(fundMe, "FundMe__NotOwner")
-    // })
+    it('allows to withdraw with multiple funders', async () => {
+      const [, ...accounts] = await hre.ethers.getSigners()
+
+      for (let account of accounts) {
+        await fundMe.connect(account).fund({ value: getAmount(1) })
+      }
+
+      const fundMeAddress = await fundMe.getAddress()
+      const contractBalanceBefore = await provider.getBalance(fundMeAddress)
+      const deployerBalanceBefore = await provider.getBalance(deployer)
+
+      const txResponse = await fundMe.withdraw()
+
+      const txReceipt = await txResponse.wait(1)
+
+      if (!txReceipt) {
+        throw new Error('Transaction receipt not found')
+      }
+
+      const gasCost = txReceipt.gasUsed * txResponse.gasPrice
+
+      const contractBalanceAfter = await provider.getBalance(fundMeAddress)
+      const deployerBalanceAfter = await provider.getBalance(deployer)
+
+      expect(contractBalanceAfter).to.equal(0)
+      expect(deployerBalanceAfter + gasCost).to.equal(contractBalanceBefore + deployerBalanceBefore)
+
+      const getFunderTx = fundMe.funders(0)
+      await expect(getFunderTx).to.be.revertedWithoutReason()
+
+      for (let account of accounts) {
+        const amountFunded = await fundMe.addressToAmountFunded(account.address)
+
+        expect(amountFunded).to.equal(0)
+      }
+    })
+
+    it('reverts if the sender is not the owner', async () => {
+      const [, account] = await hre.ethers.getSigners()
+
+      const tx = fundMe.connect(account).withdraw()
+
+      await expect(tx).to.be.revertedWithCustomError(fundMe, "FundMe__NotOwner")
+    })
   })
 })
